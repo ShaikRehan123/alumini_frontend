@@ -1,0 +1,79 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.swiper-slide {
+  width: 100%;
+  height: 100vh !important;
+}
+
+.bg {
+  width: 100%;
+  height: 100%;
+  height: inherit;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  will-change: transform;
+}
+
+.bg.bg1 {
+  background-image: url(http://localhost/alumni/images/5.jpg);
+}
+
+.bg.bg2 {
+  background-image: url(http://localhost/alumni/images/2.jpg);
+}
+
+.datepicker {
+  grid-column: 0.5;
+  grid-row: 0.5;
+  padding-bottom: 50px;
+  /* text-align: center; */
+  cursor: pointer;
+  /* width: 100px; */
+  /* height: 56px; */
+}
+.datepicker input {
+  font-size: 65 px;
+  /* font-family: "Roboto Condensed"; */
+  font-weight: bold;
+  color: #444;
+  text-align: center;
+  background-color: transparent;
+  border: 2px solid #523838;
+  cursor: pointer;
+  padding: 5px;
+  width: 100%;
+  height: 56px;
+}
+.datepicker input:focus {
+  outline: none;
+  cursor: pointer;
+}
+.user_profile_bg {
+  background-image: url(http://localhost/alumni/images/3.jpg);
+  background-size: cover;
+  width: 100vw;
+  height: 100vh;
+}
+
+.emoji-404 {
+  position: relative;
+  animation: mymove 2.5s infinite;
+}
+
+@keyframes mymove {
+  33% {
+    top: 0px;
+  }
+  66% {
+    top: 20px;
+  }
+  100% {
+    top: 0px;
+  }
+}
