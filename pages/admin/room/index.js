@@ -2,15 +2,16 @@ import axios from "axios";
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import toast from "react-hot-toast";
 const AdminHeader = dynamic(() => import("../../../components/AdminHeader"), {
   ssr: false,
 });
-function Accounts({ admins, href }) {
+function Rooms({ roomms, href }) {
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []); // at init only
   console.log(router.pathname);
-  console.log(admins);
+  console.log(roomms);
   return mounted ? (
     <>
       <AdminHeader />
@@ -37,20 +38,28 @@ function Accounts({ admins, href }) {
       </div>
       <div className="border border-gray-300 rounded-md w-[95%] m-auto p-5 space-y-4">
         <div className="bg-cyan-200 bg-opacity-75 w-full h-14 flex items-center p-3">
-          <h1 className="text-blue-300">Accounts</h1>
+          <h1 className="text-blue-300">Rooms</h1>
         </div>
+        <button
+          className="bg-green-600 p-3 rounded-md text-white"
+          onClick={() => {
+            router.push("/admin/room/add");
+          }}
+        >
+          Add Room
+        </button>
         <div className="">
           <table className="w-full text-sm text-left text-gray-500 ">
             <thead className="text-xs text-gray-700 uppercase bg-gray-50  ">
               <tr>
                 <th scope="col" className="px-6 py-3">
-                  Name
+                  Room Type
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  Username
+                  Price
                 </th>
                 <th scope="col" className="px-6 py-3">
-                  Password
+                  Photo
                 </th>
                 <th scope="col" className="px-6 py-3">
                   Action
@@ -58,29 +67,53 @@ function Accounts({ admins, href }) {
               </tr>
             </thead>
             <tbody>
-              {admins.map((admin) => (
+              {roomms.map((room) => (
                 <tr
-                  key={admin.admin_id}
+                  key={room.room_id}
                   className="border-b   odd:bg-white even:bg-gray-50 odd: even:"
                 >
                   <td
                     scope="row"
                     className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
                   >
-                    {admin.name}
+                    {room.room_type}
                   </td>
-                  <td className="px-6 py-4">{admin.username}</td>
-                  <td className="px-6 py-4">{admin.password}</td>
+                  <td className="px-6 py-4">{room.price}</td>
+                  <td className="px-6 py-4">
+                    <img
+                      src={`http://localhost/alumni/images/${room.photo}`}
+                      alt="room"
+                      className="w-full h-32"
+                      style={{ objectFit: "cover" }}
+                    />
+                  </td>
                   {/* <div className="bg-yellow-400 "> */}
-                  <td
-                    className="px-6 py-4 flex  text-yellow-500 cursor-pointer"
-                    onClick={() => {
-                      router.push(
-                        `/admin/accounts/edit?admin_id=${admin.admin_id}`
-                      );
-                    }}
-                  >
-                    Edit
+                  <td className="px-6 py-4 flex justify-center items-center h-full  text-yellow-500  space-x-3">
+                    <button
+                      className="bg-yellow-500 text-white rounded-md p-3 w-full cursor-pointer"
+                      onClick={() => {
+                        router.push(`/admin/room/edit?room_id=${room.room_id}`);
+                      }}
+                    >
+                      Edit
+                    </button>
+
+                    <button
+                      className="bg-red-500 rounded-md  text-white  p-3 w-full cursor-pointer"
+                      onClick={async () => {
+                        const data = await axios.delete(
+                          `${process.env.BACKEND_URL}/delete?room_id=${room.room_id}`
+                        );
+                        if (data.data.error) {
+                          toast.error(data.data.error);
+                        } else {
+                          toast.success(data.data.message);
+                          router.reload();
+                        }
+                      }}
+                    >
+                      Delete
+                    </button>
                   </td>
                   {/* </div> */}
                 </tr>
@@ -93,14 +126,14 @@ function Accounts({ admins, href }) {
   ) : null;
 }
 
-export default Accounts;
+export default Rooms;
 
 export async function getServerSideProps(context) {
-  const admins = await axios.get(`${process.env.BACKEND_URL}/get_all_admins`);
-  console.log(admins.data);
+  const roomms = await axios.get(`${process.env.BACKEND_URL}/get_all_rooms`);
+  console.log(roomms.data);
   return {
     props: {
-      admins: admins.data.data,
+      roomms: roomms.data.data,
     },
   };
 }
